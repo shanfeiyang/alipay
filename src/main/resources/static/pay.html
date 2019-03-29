@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<form action="/alipay/F2FPay" method="get">
+    商品名称:<input name="goodsName" type="text"><br>
+    价格:<input name="price" type="text"><br>
+    数量:<input name="quantity" type="text"><br>
+    <input type="submit" value="支付宝支付">
+</form>
+<br>
+
+<form action="/alipay/refund" method="get">
+    订单号:<input name="out_trade_no" type="text" size="40"><br>
+    <input type="submit" value="退款">
+</form>
+
+<form action="/alipay/refundQuery" method="get">
+    订单号:    <input name="out_trade_no" type="text" size="40"><br>
+    退款请求号：<input name="refundOrderNo" type="text" size="40"><br>
+    <input type="submit" value="退款查询">
+</form>
+
+<form action="/alipay/queryBill" method="get">
+    <input type="submit" value="查询对账单">
+</form>
+
+</body>
+</html>

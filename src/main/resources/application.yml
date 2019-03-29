@@ -1,0 +1,37 @@
+# 沙箱账号
+pay:
+  alipay:
+    gatewayUrl: https://openapi.alipaydev.com/gateway.do
+    appid: 2016092800613370
+    appPrivateKey: MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCT3OiDPGH4z4Ri3+7bjncHkDdRt+uDv48xRwyBKs2X6kHRIqd84YR+GHeUG6qV22FBDhqqY0bEpW0tWWFnEAJB90emh0FW43rS+bUQClla9u1MiXJQycLs/IWcJ7LMHtiXiZk5bTOs88QasujGebRcW6akBJzHufMxpIKN+rEmG+j4FbkhVxfnd17/lr0WtjpXAQ/CsqoFlwz1N2z4zqirOKzhjHcFgYwGT6IDelx4z4IW8zJKU8xQLeLuAl/bLGRYBvzbZUt8KuElhG3gtPMC+hEV5za9sxAA4f4QJFuiP0tLOMBUEM0i8CMZDRwGEX6UPoEYa52HRJy7IXDruthDAgMBAAECggEAKAI9M81x4QYdlzdqhSQOVxCRt13hrxt1HmtQGd9AFBwBxRnwYd0PoaLzMDMwPC5JKXYshvAn5OuyF/Q4Y8+0HK9RRuEQL/eLc2y3rmhudyubV/tU4EFHqiJF8NPZEFxEVPSZbi17LxAifursC1BBGkB+XaEV3wEUqdkOrmYn6tx3Fnv9+pJOjFYgJWeLth54OHEXN96DB+OOubaqOlpfCgZNCoWzLoMGGxNvWdYwUpIx9CKNrjc6pumhFIyjdzOMXl//BJsGntMMdQhU8tNMuCcTkgbxoMMeDz8KW7BmRS8v1RJtKctUsv5tiIwXTvPHKO+jMst/q0nvHQrWqstXQQKBgQDKKJz5p+yoafwhMlxJNk50QuLaaIuPs58exjcb6W6BHOGyHHKvP7XWA8YYKeg5FFcG2k3U9uy1Xfz4e2Ov5uFX8wKv3fyz6eXFdgf2prHbLoD63gcy/IJm6X6lyxVfVw5borOJHMKRynelvUlYEP25JeqY8hehUjSjA4tP0kgpIQKBgQC7PlswpbAeO6gEGzfPIjfXEktmLS/32tTE3OGu+5bRwUfg0N69azCvNX1kLnabFnpZvWHRyYloIlUQhz0yx2VX3nby2uBLjTjVSuk+deerqo2A+UHTdG+E3YLhKMRK2RRdyh/eePgvGU9LjamFsVN938HWeS7GpsTXw14BQhJg4wKBgATYkmK9rsOevseA8ItkvN62l7+KkAXi1Wakc7+8icSYj6R4YBtpWI+HyaDcqE9t+GQWqZT4UlZKqXy/YHVgAHjeP2s91AfwDGz+VlSITG0noTniRqPnP6z93eZVhu6hJJv3u3wG73cVNmcHsZFl3t8oVIZUD1LzqIVb2WQRc19hAoGABv/zxMPM67RrOYwS8AllcQLcErvJuUhS//EJ9tKs9rZ1C3CDgy1IqqQjReV+xZl3hXdQ+ti/7EasS2vi280cesZ0R+vqyqhC4aZlRdJ+kKpVk+a9kTwfFyZ4yBYQEIRBAKiXvGdlT81wa3CmT7srVd9RjcUF/KMrZK2HDCD+MuUCgYBVUrBX7uMJxj8p7aN6bF5gFDMiyAlcFBvcKdGKmBN1K3d7wm2+hviQFOUvU1K666c4tke9YVUvkCcKQtVdJ7HuZXGtE1qkoDfLMcJsv7fvdFF/u18GYFkxJTacC4oDUBNH+3cfnWeuJFXjhn6u9hyOGAfVSKS3OZqlOp392zzCRg==
+    alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkdTU55VeOlaMkkdRzqgNtz276hETGbB6ouY06arwZFyzEEDl5fzP71q2R6XKmMNWA3O0fX3ASEDMvomE2TdIVXb/2So0eZA++eJUGpRZWmS6gfxNeO+urMRWclznZPHsROwF+aGV50BTsJg66TMQpohfZFzBGHeqBRwKhAi7203A4yOGa6q/oQEdAbrs3vjUPvyAAjBrIQ82BHh8RYZV3ebRnCJZCBFQFXoxdSJ0Qp9m/xCB9khygJrcqHUZjFn+dwkZDWQIPLnQn7KvEegPAm/sEzkC0LO9nl7WmEBdiPVC48ySSMZkyxYb0Cjyh/lo8SCMIISLk17DSaeE9dsEEQIDAQAB
+    returnUrl: http://47.99.244.14:9000/alipay/return
+    notifyUrl: http://47.99.244.14:9000/alipaycallbck/notify
+    appAuthToken: 201903BB82b4bf788a624115a162e36ea072eA27
+    storeId: 6
+server:
+  port: 9000
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+  mvc:
+    view:
+      prefix: classpath:/static/
+      suffix: .html
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/alipay?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.alipay.pojo
+
+
+
+
+
+

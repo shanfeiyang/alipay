@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>支付宝支付</title>
+</head>
+<body>
+恭喜您，授权成功！</br>
+授权令牌app_auth_token:<span th:text="${result['appAuthToken']}"></span></br>
+授权信息:<span th:text="${result['tokenbody']}"></span></br>
+商家标识:<span th:text="${result['name']}"></span></br>
+</body>
+</html>

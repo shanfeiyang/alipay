@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.alipay.dao.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.example.alipay.pojo.Order">
+        <id column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR"/>
+        <result column="payment" property="payment" jdbcType="DECIMAL"/>
+        <result column="act_rec_money" property="actRecMoney" jdbcType="DECIMAL"/>
+        <result column="order_status" property="orderStatus" jdbcType="VARCHAR"/>
+        <result column="goods_status" property="goodsStatus" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP"/>
+        <result column="close_time" property="closeTime" jdbcType="TIMESTAMP"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="seller_id" property="sellerId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        out_trade_no, payment, act_rec_money, order_status, goods_status, create_time, finish_time,
+        close_time, user_id, seller_id
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.example.alipay.pojo.OrderExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from jy_order
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from jy_order
+        where out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </select>
+    <select id="getTotalAmount" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT payment
+        FROM jy_order
+        WHERE out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        DELETE FROM jy_order
+        WHERE out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.example.alipay.pojo.OrderExample">
+        delete from jy_order
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.example.alipay.pojo.Order">
+        INSERT INTO jy_order (out_trade_no, payment, act_rec_money,
+                              order_status, goods_status, create_time,
+                              finish_time, close_time, user_id,
+                              seller_id)
+        VALUES (#{outTradeNo,jdbcType=VARCHAR}, #{payment,jdbcType=DECIMAL}, #{actRecMoney,jdbcType=DECIMAL},
+                #{orderStatus,jdbcType=VARCHAR}, #{goodsStatus,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+                #{finishTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=VARCHAR},
+                #{sellerId,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.example.alipay.pojo.Order">
+        insert into jy_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="outTradeNo != null">
+                out_trade_no,
+            </if>
+            <if test="payment != null">
+                payment,
+            </if>
+            <if test="actRecMoney != null">
+                act_rec_money,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+            <if test="goodsStatus != null">
+                goods_status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="finishTime != null">
+                finish_time,
+            </if>
+            <if test="closeTime != null">
+                close_time,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="sellerId != null">
+                seller_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="outTradeNo != null">
+                #{outTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="payment != null">
+                #{payment,jdbcType=DECIMAL},
+            </if>
+            <if test="actRecMoney != null">
+                #{actRecMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsStatus != null">
+                #{goodsStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="closeTime != null">
+                #{closeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="sellerId != null">
+                #{sellerId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.example.alipay.pojo.OrderExample" resultType="java.lang.Integer">
+        select count(*) from jy_order
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update jy_order
+        <set>
+            <if test="record.outTradeNo != null">
+                out_trade_no = #{record.outTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.payment != null">
+                payment = #{record.payment,jdbcType=DECIMAL},
+            </if>
+            <if test="record.actRecMoney != null">
+                act_rec_money = #{record.actRecMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="record.orderStatus != null">
+                order_status = #{record.orderStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="record.goodsStatus != null">
+                goods_status = #{record.goodsStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.finishTime != null">
+                finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.closeTime != null">
+                close_time = #{record.closeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.userId != null">
+                user_id = #{record.userId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.sellerId != null">
+                seller_id = #{record.sellerId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update jy_order
+        set out_trade_no = #{record.outTradeNo,jdbcType=VARCHAR},
+        payment = #{record.payment,jdbcType=DECIMAL},
+        act_rec_money = #{record.actRecMoney,jdbcType=DECIMAL},
+        order_status = #{record.orderStatus,jdbcType=VARCHAR},
+        goods_status = #{record.goodsStatus,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
+        close_time = #{record.closeTime,jdbcType=TIMESTAMP},
+        user_id = #{record.userId,jdbcType=VARCHAR},
+        seller_id = #{record.sellerId,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.alipay.pojo.Order">
+        update jy_order
+        <set>
+            <if test="payment != null">
+                payment = #{payment,jdbcType=DECIMAL},
+            </if>
+            <if test="actRecMoney != null">
+                act_rec_money = #{actRecMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsStatus != null">
+                goods_status = #{goodsStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="closeTime != null">
+                close_time = #{closeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="sellerId != null">
+                seller_id = #{sellerId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.alipay.pojo.Order">
+        UPDATE jy_order
+        SET payment       = #{payment,jdbcType=DECIMAL},
+            act_rec_money = #{actRecMoney,jdbcType=DECIMAL},
+            order_status  = #{orderStatus,jdbcType=VARCHAR},
+            goods_status  = #{goodsStatus,jdbcType=VARCHAR},
+            create_time   = #{createTime,jdbcType=TIMESTAMP},
+            finish_time   = #{finishTime,jdbcType=TIMESTAMP},
+            close_time    = #{closeTime,jdbcType=TIMESTAMP},
+            user_id       = #{userId,jdbcType=VARCHAR},
+            seller_id     = #{sellerId,jdbcType=VARCHAR}
+        WHERE out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </update>
+</mapper>

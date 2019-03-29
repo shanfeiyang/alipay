@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <title>jasonPayTestDemo</title>
+</head>
+<body>
+<div class="container" id="wechat" style="display: none;">
+    <div style="text-align: center;">
+        <img src="http://qr.liantu.com/api.php?text=wxp://f2f0lGxS0y-AT4xJ9IIXI_nKcp3U2b2b_W0L">
+        <h3>please use wechat, long presh and pay</h3>
+    </div>
+</div>
+</body>
+</html>
+<script language="javascript">
+
+    var ua = navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i)=="micromessenger") {
+        goAndPayByWechat();
+    } else if(ua.match(/AlipayClient/i)=="alipayclient"){
+        goAndPayByAli();
+    } else{
+        alert("please use wechat or alipay");
+    }
+
+    function goAndPayByAli(){
+        window.location.href="https://qr.alipay.com/bax06355i7d1aretvjaw00e5";
+    }
+
+    function goAndPayByWechat(){
+        document.getElementById("wechat").removeAttribute("style");
+    }
+</script>

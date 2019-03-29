@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/js/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <script type="text/javascript" src="/js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            getAllOrder();
+        });
+
+        function getAllOrder() {
+            $.get(
+                "/manager/getAllOrder",
+                function (data) {
+                    var str = "";
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<tr>" +
+                            "<td>" + (i + 1) + "</td>" +
+                            "<td>" + data[i].outTradeNo + "</td>" +
+                            "<td>" + renderTime(data[i].createTime) + "</td>" +
+                            "<td>" + renderTime(data[i].finishTime) + "</td>" +
+                            "<td>" + renderTime(data[i].closeTime) + "</td>" +
+                            "<td>" + data[i].payment + "</td>" +
+                            "<td>" + ifnull(data[i].actRecMoney) + "</td>" +
+                            "<td>" + ifnull(data[i].userId) + "</td>" +
+                            "<td>" + ifnull(data[i].sellerId) + "</td>" +
+                            "<td>" + status(data[i].orderStatus) +"</td>"+
+                            "<td>" +"<a href='/manager/getOrderItem?outTradeNo="+data[i].outTradeNo+"'>订单详情</a>"+"</td>"+
+                            "<td>" +"<a href='/manager/getPayLog?outTradeNo="+data[i].outTradeNo+"'>支付详情</a>"+"</td>"+
+                            "<td>" +"<a href='/alipay/refund?out_trade_no="+data[i].outTradeNo+"'>退款</a>"+"</td>"+
+                            "</tr>";
+                    }
+                    $("#tbody-result").html(str);
+                }
+            )
+        };
+
+        function renderTime(date) {
+            if (date) {
+                var dateee = new Date(date).toJSON();
+                return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+            }
+            return "";
+        }
+
+        function ifnull(data) {
+            if (data) {
+                return data;
+            }
+            return "";
+        }
+
+        function status(data) {
+            if (data == 1) {
+                return "未付款";
+            } else if (data == 2) {
+                return "已付款";
+            } else if (data == 3) {
+                return "已完成";
+            } else if (data == 4) {
+                return "已退款";
+            } else if (data == 5) {
+                return "已关闭";
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="box-body">
+
+    <!-- 数据表格 -->
+    <div class="table-box">
+
+        <!--数据列表-->
+        <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>订单号</th>
+                <th>创建时间</th>
+                <th>结束时间</th>
+                <th>关闭时间</th>
+                <th>支付金额</th>
+                <th>实收金额</th>
+                <th>用户ID</th>
+                <th>商家ID</th>
+                <th>订单状态</th>
+                <th>订单详情</th>
+                <th>支付日志</th>
+                <th>退款</th>
+            </tr>
+            </thead>
+            <tbody id="tbody-result">
+
+            </tbody>
+        </table>
+        <!--<tm-pagination conf="paginationConf"></tm-pagination>-->
+        <!--数据列表/-->
+    </div>
+    <!-- 数据表格 /-->
+
+</div>
+</body>
+</html>
