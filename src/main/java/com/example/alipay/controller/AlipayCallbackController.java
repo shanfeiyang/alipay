@@ -7,6 +7,8 @@ import com.example.alipay.dao.OrderMapper;
 import com.example.alipay.dao.Pay_logMapper;
 import com.example.alipay.pojo.Order;
 import com.example.alipay.pojo.Pay_log;
+import com.example.common.exception.PayException;
+import com.example.common.result.ResultEnum;
 import com.example.common.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -54,8 +56,8 @@ public class AlipayCallbackController {
      * https://docs.open.alipay.com/194/103296
      */
     @RequestMapping("/notify")
-    @Transactional
-    public String notify(HttpServletRequest request)  {
+    @Transactional(readOnly = false)
+    public String notify(HttpServletRequest request) {
         // 一定要验签，防止黑客篡改参数
         Map<String, String> map = convertRequestParamsToMap(request);
         StringBuilder notifyBuild = new StringBuilder("/****************************** alipay notify ******************************/\n");
@@ -84,7 +86,7 @@ public class AlipayCallbackController {
             //对支付结果中的参数进行校验
             try {
                 this.check(map);
-            } catch (AlipayApiException e) {
+            } catch (PayException e) {
                 e.printStackTrace();
                 return "fail";
             }
@@ -97,7 +99,6 @@ public class AlipayCallbackController {
                 String buyer_id = map.get("buyer_id");//顾客账号
                 String notify_time = map.get("notify_time");//通知时间，即支付完成时间
                 String receipt_amount = map.get("receipt_amount");//商户实收金额
-
                 //更新订单信息
                 updateOrder(out_trade_no, buyer_id, notify_time, receipt_amount);
                 //更新支付日志
@@ -136,20 +137,23 @@ public class AlipayCallbackController {
         orderMapper.updateByPrimaryKey(order);
     }
 
-    private void check(Map<String, String> params) throws AlipayApiException {
+    private void check(Map<String, String> params) throws PayException {
         String outTradeNo = params.get("out_trade_no");
 
         // 1、验证该通知数据中的out_trade_no是否为商户系统中创建的订单号，
         Order order = orderMapper.selectByPrimaryKey(outTradeNo);
         if (order == null) {
-            throw new AlipayApiException("out_trade_no错误");
+            log.error("【支付宝支付】异步通知, 订单不存在, out_trade_no={}", outTradeNo);
+            throw new PayException(ResultEnum.ORDER_NOT_EXIST);
         }
         // 2、判断total_amount是否确实为该订单的实际金额（即商户订单创建时的金额），
 
         BigDecimal total_amount = new BigDecimal(params.get("total_amount")).multiply(new BigDecimal(100));
         BigDecimal payment = order.getPayment().multiply(new BigDecimal(100));
         if (total_amount.compareTo(payment) != 0) {
-            throw new AlipayApiException("error total_amount");
+            log.error("【支付宝支付】异步通知, 订单金额不一致, orderId={}, 微信通知金额={}, 系统金额={}",
+                    outTradeNo, total_amount, payment);
+            throw new PayException(ResultEnum.ALIPAY_NOTIFY_MONEY_VERIFY_ERROR);
         }
         // 3、校验通知中的seller_id（或者seller_email)是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email），
         // 第三步可根据实际情况省略

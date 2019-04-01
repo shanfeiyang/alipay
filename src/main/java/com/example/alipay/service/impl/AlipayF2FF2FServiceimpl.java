@@ -15,6 +15,8 @@ import com.example.alipay.dao.Pay_logMapper;
 import com.example.alipay.dao.SellerMapper;
 import com.example.alipay.pojo.*;
 import com.example.alipay.service.AlipayF2FService;
+import com.example.common.exception.PayException;
+import com.example.common.result.ResultEnum;
 import com.example.common.util.IdWorker;
 import com.example.common.util.QRCodeUtil;
 import com.google.zxing.WriterException;
@@ -52,7 +54,7 @@ import java.util.zip.ZipInputStream;
  * @Version 1.0
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional(readOnly = true)
 public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
     private static Logger logger = LoggerFactory.getLogger(AlipayF2FController.class);
 
@@ -87,7 +89,7 @@ public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
      * @throws Exception
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = false)
     public Map precreate(Double price, Integer quantity, String goodsName, HttpServletResponse response) {
         //out_trade_no 商户外部订单号
         IdWorker idWorker = new IdWorker();
@@ -154,12 +156,13 @@ public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
                 map.put("codeurl", act_codeurl);
                 map.put("out_trade_no", out_trade_no);
             } else {
-                logger.info(res.getSubMsg());
-                map.put("message", "下单失败，请稍后重试");
+                logger.info("与支付宝服务器通讯失败:", msg);
+                throw new PayException(ResultEnum.ALIPAY_CONNECT_FAIL);
             }
         } catch (AlipayApiException e) {
-            logger.error(e.getErrMsg());
+            logger.error(e.getMessage());
             e.printStackTrace();
+            throw new PayException(ResultEnum.ALIPAY_PRECREATE_FAIL);
         }
         return map;
     }
@@ -211,7 +214,7 @@ public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
      * @return
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = false)
     public ResultMessage queryPayStatus(String out_trade_no) {
         ResultMessage resultMessage = new ResultMessage();
         if (!StringUtils.isEmpty(out_trade_no)) {
@@ -247,13 +250,13 @@ public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
                     resultMessage.setSuccess(false);
                     resultMessage.setMessage("未扫码");
                 } else {
-                    logger.info(response.getSubMsg());
-                    resultMessage.setSuccess(false);
-                    resultMessage.setMessage(response.getSubMsg());
+                    logger.info("与支付宝服务器通讯失败:", msg);
+                    throw new PayException(ResultEnum.ALIPAY_CONNECT_FAIL);
                 }
             } catch (AlipayApiException e) {
                 logger.error(e.getErrMsg());
                 e.printStackTrace();
+                throw new PayException(ResultEnum.ALIPAY_ORDER_QUERY_FAIL);
             }
         } else {
             resultMessage.setSuccess(false);
@@ -304,13 +307,13 @@ public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
                     resultMessage.setMessage("退款失败，请勿提交已退款的订单");
                 }
             } else {
-                logger.info("退款失败，原因：" + alipayResponse.getSubMsg());
-                resultMessage.setSuccess(false);
-                resultMessage.setMessage("退款失败，原因：" + alipayResponse.getSubMsg());
+                logger.info("与支付宝服务器通讯失败:", msg);
+                throw new PayException(ResultEnum.ALIPAY_CONNECT_FAIL);
             }
         } catch (AlipayApiException e) {
             logger.error(e.getErrMsg());
             e.printStackTrace();
+            throw new PayException(ResultEnum.ALIPAY_ORDER_REFUND_FAIL);
         }
         return resultMessage;
     }
@@ -341,9 +344,8 @@ public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
                     logger.info("订单取消成功");
                     resultMessage.setSuccess(true);
                 } else {
-                    logger.info("订单取消失败");
-                    resultMessage.setSuccess(false);
-                    resultMessage.setMessage(response.getSubMsg());
+                    logger.info("与支付宝服务器通讯失败:", msg);
+                    throw new PayException(ResultEnum.ALIPAY_CONNECT_FAIL);
                 }
             } else {
                 logger.info("订单已支付，不能取消");
@@ -353,6 +355,7 @@ public class AlipayF2FF2FServiceimpl implements AlipayF2FService {
         } catch (AlipayApiException e) {
             logger.error(e.getErrMsg());
             e.printStackTrace();
+            throw new PayException(ResultEnum.ALIPAY_ORDER_CLOSE_FAIL);
         }
 
         return resultMessage;
