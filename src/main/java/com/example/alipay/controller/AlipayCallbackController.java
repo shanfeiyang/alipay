@@ -151,7 +151,7 @@ public class AlipayCallbackController {
         BigDecimal total_amount = new BigDecimal(params.get("total_amount")).multiply(new BigDecimal(100));
         BigDecimal payment = order.getPayment().multiply(new BigDecimal(100));
         if (total_amount.compareTo(payment) != 0) {
-            log.error("【支付宝支付】异步通知, 订单金额不一致, orderId={}, 微信通知金额={}, 系统金额={}",
+            log.error("【支付宝支付】异步通知, 订单金额不一致, orderId={}, 通知金额={}, 系统金额={}",
                     outTradeNo, total_amount, payment);
             throw new PayException(ResultEnum.ALIPAY_NOTIFY_MONEY_VERIFY_ERROR);
         }
